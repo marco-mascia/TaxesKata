@@ -1,6 +1,3 @@
-
-
-
 export interface IProduct {
     name: string;
     price: number;
@@ -16,13 +13,11 @@ export interface ICart {
 
 const taxesLabel = 'Sales Taxes:';
 const totalPriceLabel = 'Total:';
+const salesTax = 0.1;
 
 export const calculateTaxes = (products: IProduct[]): ICart => {
     
-
     let cart: ICart = { products: products, totalTaxes: `${taxesLabel} 0`, totalPrice: `${totalPriceLabel} 0`};
-
-    const salesTax = 0.1;
     let totalTaxes = 0;
     let totalPrice = 0;
   
