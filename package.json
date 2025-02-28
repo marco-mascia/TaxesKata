@@ -1,0 +1,21 @@
+{
+  "name": "taxeskata",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest --config ./src/vitest.config.ts",
+    "test:watch": "vitest unit"
+  },
+  "devDependencies": {
+    "happy-dom": "^17.1.8",
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "vitest": "^3.0.7"
+  }
+}
