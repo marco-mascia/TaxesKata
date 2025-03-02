@@ -1,23 +1,23 @@
-import { ICart, IProduct } from "./taxes-calculator";
+import { Product, Receipt } from "./taxes-calculator-fuctional";
 
-export const printToScreen = (cart: ICart) => {
+export const printToScreen = (receipt: Receipt) => {
+
+    console.log('receipt ', receipt);
 
     const div = document.createElement("div");
       
-    cart.products.forEach((product: IProduct) => {
+    receipt.items.forEach((product: Product) => {
         const p = document.createElement("p");
         p.textContent = `${product.quantity} ${product.name}: ${product.price * product.quantity}`;
         div.appendChild(p);
     });
     
     const taxes = document.createElement("p");
-    taxes.textContent = `${cart.totalTaxes}`;
+    taxes.textContent = `${receipt.totalTax}`;
     div.appendChild(taxes);
     const total = document.createElement("p");
-    total.textContent = `${cart.totalPrice}`;
+    total.textContent = `${receipt.totalAmount}`;
     div.appendChild(total);
-
-    
+  
     return div;
-
 }

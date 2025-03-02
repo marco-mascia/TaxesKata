@@ -1,7 +1,6 @@
 import './style.css'
-import { setupCounter } from './counter.ts'
-import { calculateTaxes, IProduct } from './taxes-calculator.ts'
 import { printToScreen } from './print-to-screen.ts'
+import { calculateTaxes, Product } from './taxes-calculator-fuctional.ts'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
@@ -13,9 +12,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </div>
 `
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
-
-const products: IProduct[] = [
+const products: ReadonlyArray<Product> = [
   { name: "book", price: 12.49, quantity: 2, isExempt: true },
   { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
   { name: "chocolate bar", price: 0.85, quantity: 1, isExempt: true },
@@ -23,8 +20,11 @@ const products: IProduct[] = [
   { name: "trousers", price: 59.99, quantity: 1, isExempt: false },
 ];
 
+// { name: "book", price: 12.49, quantity: 2, isExempt: true },
+//       { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
+//       { name: "chocolate bar", price: 0.85, quantity: 1, isExempt: true },
+//       { name: "aspirin", price: 7.69, quantity: 3, isExempt: true },
+//       { name: "trousers", price: 59.99, quantity: 1, isExempt: false },
 
 const element = document.getElementById('receipt');
 element?.appendChild(printToScreen(calculateTaxes(products)));
-
-
