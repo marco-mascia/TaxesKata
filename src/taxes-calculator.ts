@@ -49,8 +49,7 @@ export const createReceipt = (products: ReadonlyArray<Product>): Receipt => {
     };
 };
 
-export const formatCurrency = (amount: number): string => 
-    amount.toFixed(2);
+export const formatCurrency = (amount: number): string => amount.toFixed(2);
 
 export const formatReceiptLine = (item: ReceiptItem): string => 
     `${item.quantity} ${item.name}: ${formatCurrency(item.total)}`;
@@ -62,23 +61,14 @@ export const formatReceipt = (receipt: Receipt): ReadonlyArray<string> => [
     `Total: ${formatCurrency(receipt.totalAmount)}`
 ];
 
-export const calculateTaxes = (products: ReadonlyArray<Product>): Receipt =>  createReceipt(products);
+export const printReceipt = (receipt: Receipt): void => 
+    formatReceipt(receipt).forEach(line => console.log(line));
+
+export const calculateTaxes = (products: ReadonlyArray<Product>): Receipt =>  {
+    const receipt = createReceipt(products);
+    printReceipt(receipt); //print on console
+    return receipt
+};
 
 
-// export const printReceipt = (receipt: Receipt): void => 
-//     formatReceipt(receipt).forEach(line => console.log(line));
 
-// export const testInput = (): void => {
-//     const products:  ReadonlyArray<Product> = [
-//       { name: "book", price: 12.49, quantity: 2, isExempt: true },
-//       { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
-//       { name: "chocolate bar", price: 0.85, quantity: 1, isExempt: true },
-//       { name: "aspirin", price: 7.69, quantity: 3, isExempt: true },
-//       { name: "trousers", price: 59.99, quantity: 1, isExempt: false },
-//     ];
-
-//     const receipt = createReceipt(products);
-//     printReceipt(receipt);    
-// }
-// // Run the test
-// testInput();

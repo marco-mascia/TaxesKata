@@ -14,8 +14,8 @@ describe('Taxes Calculator', () => {
     it("should create a div with product details, taxes, and total", () => {
         const receipt: Receipt = {
           items: [
-            { name: "book", price: 12.49, quantity: 2, isExempt: false, tax: 0, total: 24.98 },
-            { name: "music CD", price: 14.99, quantity: 1, isExempt: true, tax: 0, total: 24.98  },
+            { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
+            { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax: 1.50, total: 24.98 },
           ],
           totalTax:  1.50, 
           totalAmount: 42.32

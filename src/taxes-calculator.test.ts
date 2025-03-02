@@ -7,8 +7,8 @@ describe('Taxes Calculator', () => {
         it("should handle an empty product list", () => {
             const result = calculateTaxes([]);
             expect(result.items).toStrictEqual([]);
-            expect(result.totalTax).toStrictEqual("Sales Taxes: 0.00");
-            expect(result.totalAmount).toStrictEqual("Total: 0.00");
+            expect(result.totalTax).toStrictEqual(0);
+            expect(result.totalAmount).toStrictEqual(0);
         });
     })
 
@@ -20,13 +20,14 @@ describe('Taxes Calculator', () => {
         ];
     
         const result: Receipt = calculateTaxes(products);
+
         expect(result.items).toStrictEqual([
-            { name: "book", price: 12.49, quantity: 2, isExempt: true },
-            { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
-            { name: "chocolate bar", price: 0.85, quantity: 1, isExempt: true },
+            { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0 , total: 24.98 },
+            { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax : 1.5, total: 16.49 },
+            { name: "chocolate bar", price: 0.85, quantity: 1, isExempt: true, tax: 0 , total: 0.85 },
           ]);
-        expect(result.totalTax).toStrictEqual('Sales Taxes: 1.50');
-        expect(result.totalAmount).toStrictEqual('Total: 42.32');
+        expect(result.totalTax).toStrictEqual(1.50);
+        expect(result.totalAmount).toStrictEqual(42.32);
       });
 
 
@@ -36,9 +37,9 @@ describe('Taxes Calculator', () => {
             expect(calculateTax(product)).toBe(0);
         });
 
-        it('should calculate 10% tax and round to nearest 0.05', () => {
+        it('should calculate 10% tax', () => {
             const product = { quantity: 1, name: 'music CD', price: 14.99, isExempt: false };
-            // 14.99 * 0.10 = 1.499 -> rounded to 1.50
+            // 14.99 * 0.10 = 1.49 (rounded to 1.50)
             expect(calculateTax(product)).toBe(1.50);
         });
     });
@@ -79,7 +80,6 @@ describe('Taxes Calculator', () => {
             expect(receipt.items).toHaveLength(2);
             expect(receipt.totalTax).toBe(1.50); // Only music CD is taxed
             expect(receipt.totalAmount).toBe(28.98); // 12.49 + (14.99 + 1.50)
-
         });
     });
 
