@@ -1,4 +1,5 @@
-// Types
+/***** TYPES *****/
+
 export type Product = {
     quantity: number;
     name: string;
@@ -17,6 +18,9 @@ export type Receipt = {
     totalAmount: number;
 }
 
+
+/***** CALCS *****/
+
 export const calculateTax = (product: Product): number => {
     if (product.isExempt) {
         return 0;
@@ -28,7 +32,6 @@ export const calculateTax = (product: Product): number => {
 export const calculateItemTotal = (product: Product, tax: number): number => { 
     return parseFloat((product.quantity * (product.price + tax)).toFixed(2))
 }
-
 
 export const createReceiptItem = (product: Product): ReceiptItem => {
     const tax = calculateTax(product);
@@ -44,31 +47,43 @@ export const createReceipt = (products: ReadonlyArray<Product>): Receipt => {
     
     return {
         items,
-        totalTax: items.reduce((sum, item) => sum + (item.tax * item.quantity), 0),
-        totalAmount: parseFloat((items.reduce((sum, item) => sum + item.total, 0)).toFixed(2))
+        totalTax: formatCurrencyNumber(items.reduce((sum, item) => sum + (item.tax * item.quantity), 0)),
+        totalAmount: formatCurrencyNumber(items.reduce((sum, item) => sum + item.total, 0))
     };
 };
 
-export const formatCurrency = (amount: number): string => amount.toFixed(2);
+export const calculateTaxes = (products: ReadonlyArray<Product>): Receipt =>  {
+    const receipt = createReceipt(products);
+    printReceipt(receipt); //only for print on console
+    return receipt
+};
 
+
+/***** FORMATTERS *****/
+
+export const formatCurrency = (amount: number): string => amount.toFixed(2);
+export const formatCurrencyNumber = (amount: number): number => parseFloat(formatCurrency(amount));
+
+//only for print in console
 export const formatReceiptLine = (item: ReceiptItem): string => 
     `${item.quantity} ${item.name}: ${formatCurrency(item.total)}`;
 
-
+//only for print in console
 export const formatReceipt = (receipt: Receipt): ReadonlyArray<string> => [
     ...receipt.items.map(formatReceiptLine),
     `Sales Taxes: ${formatCurrency(receipt.totalTax)}`,
     `Total: ${formatCurrency(receipt.totalAmount)}`
 ];
 
+
+/***** PRINT *****/
+
+//only for print in console
 export const printReceipt = (receipt: Receipt): void => 
     formatReceipt(receipt).forEach(line => console.log(line));
 
-export const calculateTaxes = (products: ReadonlyArray<Product>): Receipt =>  {
-    const receipt = createReceipt(products);
-    printReceipt(receipt); //print on console
-    return receipt
-};
+
+
 
 
 

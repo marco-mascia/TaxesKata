@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { calculateTax, calculateItemTotal, createReceiptItem, createReceipt, formatCurrency, formatReceiptLine, formatReceipt, Product, calculateTaxes, Receipt } from "./taxes-calculator";
+import { calculateTax, calculateItemTotal, createReceiptItem, createReceipt, formatCurrency, formatReceiptLine, formatReceipt, Product, calculateTaxes, Receipt, formatCurrencyNumber } from "./taxes-calculator";
 
 describe('Taxes Calculator', () => {
     
@@ -17,6 +17,7 @@ describe('Taxes Calculator', () => {
           { name: "book", price: 12.49, quantity: 2, isExempt: true },
           { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
           { name: "chocolate bar", price: 0.85, quantity: 1, isExempt: true },
+          { name: "trousers", price: 59.99, quantity: 2, isExempt: false },
         ];
     
         const result: Receipt = calculateTaxes(products);
@@ -25,9 +26,10 @@ describe('Taxes Calculator', () => {
             { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0 , total: 24.98 },
             { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax : 1.5, total: 16.49 },
             { name: "chocolate bar", price: 0.85, quantity: 1, isExempt: true, tax: 0 , total: 0.85 },
+            { name: "trousers", price: 59.99, quantity: 2, isExempt: false, tax: 6, total: 131.98 },
           ]);
-        expect(result.totalTax).toStrictEqual(1.50);
-        expect(result.totalAmount).toStrictEqual(42.32);
+        expect(result.totalTax).toStrictEqual(13.5);
+        expect(result.totalAmount).toStrictEqual(174.3);
       });
 
 
@@ -84,9 +86,15 @@ describe('Taxes Calculator', () => {
     });
 
     describe('formatting functions', () => {
-        it('formatCurrency should format numbers to 2 decimal places', () => {
+        it('formatCurrency should format numbers to 2 decimal places and return strings', () => {
             expect(formatCurrency(12.4)).toBe('12.40');
             expect(formatCurrency(12.456)).toBe('12.46');
+        });
+
+
+        it('formatCurrencyNumber should format numbers to 2 decimal places and return numbers', () => {
+            expect(formatCurrencyNumber(12.4)).toBe(12.40);
+            expect(formatCurrencyNumber(12.456)).toBe(12.46);
         });
 
         it('formatReceiptLine should format item lines correctly', () => {
