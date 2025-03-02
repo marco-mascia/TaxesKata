@@ -17,7 +17,6 @@ export type Receipt = {
     totalAmount: number;
 }
 
-
 export const calculateTax = (product: Product): number => {
     if (product.isExempt) {
         return 0;
@@ -50,7 +49,6 @@ export const createReceipt = (products: ReadonlyArray<Product>): Receipt => {
     };
 };
 
-
 export const formatCurrency = (amount: number): string => 
     amount.toFixed(2);
 
@@ -63,6 +61,9 @@ export const formatReceipt = (receipt: Receipt): ReadonlyArray<string> => [
     `Sales Taxes: ${formatCurrency(receipt.totalTax)}`,
     `Total: ${formatCurrency(receipt.totalAmount)}`
 ];
+
+export const calculateTaxes = (products: ReadonlyArray<Product>): Receipt =>  createReceipt(products);
+
 
 // export const printReceipt = (receipt: Receipt): void => 
 //     formatReceipt(receipt).forEach(line => console.log(line));
@@ -81,5 +82,3 @@ export const formatReceipt = (receipt: Receipt): ReadonlyArray<string> => [
 // }
 // // Run the test
 // testInput();
-
-export const calculateTaxes = (products: ReadonlyArray<Product>): Receipt =>  createReceipt(products);

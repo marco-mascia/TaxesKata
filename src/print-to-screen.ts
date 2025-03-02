@@ -1,4 +1,4 @@
-import { Product, Receipt } from "./taxes-calculator-fuctional";
+import { Product, Receipt } from "./taxes-calculator";
 
 export const printToScreen = (receipt: Receipt) => {
 

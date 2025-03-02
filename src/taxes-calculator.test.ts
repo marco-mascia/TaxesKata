@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { calculateTax, calculateItemTotal, createReceiptItem, createReceipt, formatCurrency, formatReceiptLine, formatReceipt, Product, calculateTaxes, Receipt } from "./taxes-calculator-fuctional";
+import { calculateTax, calculateItemTotal, createReceiptItem, createReceipt, formatCurrency, formatReceiptLine, formatReceipt, Product, calculateTaxes, Receipt } from "./taxes-calculator";
 
 describe('Taxes Calculator', () => {
     
