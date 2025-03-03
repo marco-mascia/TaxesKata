@@ -1,6 +1,6 @@
 import './style.css'
 import { printToScreen } from './print-to-screen.ts'
-import { calculateTaxes } from './taxes-calculator.ts'
+import { calculateReceipt } from './taxes-calculator.ts'
 import { pickRandomItems, setupRandomizer } from './randomizer.ts';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -13,10 +13,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </div>
 `
 
-
 setupRandomizer(document.querySelector<HTMLButtonElement>('#randomizer')!)
 
 const element = document.getElementById('receipt');
 const products = pickRandomItems(10);
-element?.appendChild(printToScreen(calculateTaxes(products)));
+element?.appendChild(printToScreen(calculateReceipt(products)));
 

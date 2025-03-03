@@ -4,10 +4,8 @@ export type Product = {
     quantity: number;
     name: string;
     price: number;
-    isExempt: boolean;
+    isExempt: Boolean;
 }
-
-
 
 export type ReceiptItem = Product & {
     tax: number;
@@ -50,8 +48,8 @@ export const createReceiptItem = (product: Product): ReceiptItem => {
 };
 
 export const createReceipt = (products: ReadonlyArray<Product>): Receipt => {
-    const items = products.map(createReceiptItem);
-    
+    const items = mapProductItems(products);
+
     return {
         items,
         totalTax: sumTotalTaxes(items),
@@ -59,8 +57,23 @@ export const createReceipt = (products: ReadonlyArray<Product>): Receipt => {
     };
 };
 
-export const sumTotalTaxes = (items: ReadonlyArray<ReceiptItem>) => {
-    return formatCurrencyNumber(items.reduce((sum, item) => sum + (item.tax * item.quantity), 0))
+//checks for empty products list and negative or zero product quantity
+export const mapProductItems = (products: ReadonlyArray<Product>): ReadonlyArray<ReceiptItem> => {
+    
+    if (!products || products.length === 0) {
+        return [];
+    }
+
+    return products.filter(product => product !== null && product !== undefined && product.quantity >= 0 && product.price >= 0)
+                    .map(product => createReceiptItem(product));
+
+}
+
+export const sumTotalTaxes = (items: ReadonlyArray<ReceiptItem>): number => {
+    return formatCurrencyNumber(items.reduce((sum, item) => {
+        if (item.quantity < 0) return 0;
+        return sum + (item.tax * item.quantity);
+    }, 0))
 }
 
 
@@ -69,7 +82,7 @@ export const sumTotalAmount = (items: ReadonlyArray<ReceiptItem>) => {
 }
 
 
-export const calculateTaxes = (products: ReadonlyArray<Product>): Receipt =>  {
+export const calculateReceipt = (products: ReadonlyArray<Product>): Receipt =>  {
     const receipt = createReceipt(products);
     printReceipt(receipt); //only for print on console
     return receipt
@@ -98,9 +111,4 @@ export const formatReceipt = (receipt: Receipt): ReadonlyArray<string> => [
 //only for print in console
 export const printReceipt = (receipt: Receipt): void => 
     formatReceipt(receipt).forEach(line => console.log(line));
-
-
-
-
-
 

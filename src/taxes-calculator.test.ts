@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
-import { calculateTax, calculateItemTotal, createReceiptItem, createReceipt, formatCurrency, formatReceiptLine, formatReceipt, Product, calculateTaxes, Receipt, formatCurrencyNumber, sumTotalAmount, ReceiptItem, sumTotalTaxes } from "./taxes-calculator";
+import { calculateTax, calculateItemTotal, createReceiptItem, createReceipt, formatCurrency, formatReceiptLine, formatReceipt, Product, Receipt, formatCurrencyNumber, sumTotalAmount, ReceiptItem, sumTotalTaxes, calculateReceipt, mapProductItems } from "./taxes-calculator";
 
 describe('Taxes Calculator', () => {
     
-    describe('calculateTaxes', () => {
+    describe('calculateReceipt', () => {
         it("should handle an empty product list", () => {
-            const result = calculateTaxes([]);
+            const result = calculateReceipt([]);
             expect(result.items).toStrictEqual([]);
             expect(result.totalTax).toStrictEqual(0);
             expect(result.totalAmount).toStrictEqual(0);
@@ -20,7 +20,7 @@ describe('Taxes Calculator', () => {
           { name: "trousers", price: 59.99, quantity: 2, isExempt: false },
         ];
     
-        const result: Receipt = calculateTaxes(products);
+        const result: Receipt = calculateReceipt(products);
 
         expect(result.items).toStrictEqual([
             { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
@@ -39,7 +39,7 @@ describe('Taxes Calculator', () => {
             { name: "spaghetti", price: 1.89, quantity: 7, isExempt: true }, 
         ];
     
-        const result: Receipt = calculateTaxes(products);
+        const result: Receipt = calculateReceipt(products);
 
         expect(result.items).toStrictEqual([
             { name: "spaghetti", price: 1.89, quantity: 7, isExempt: true, tax: 0, total: 13.23}, 
@@ -49,20 +49,20 @@ describe('Taxes Calculator', () => {
       });
 
       
-   
 
       it("should manage negative quantity", () => {
         const products: Product[] = [
             { name: "spaghetti", price: 1.89, quantity: -1, isExempt: true }, 
         ];
     
-        const result: Receipt = calculateTaxes(products);
+        const result: Receipt = calculateReceipt(products);
 
         expect(result.items).toStrictEqual([]);
         expect(result.totalTax).toStrictEqual(0);
         expect(result.totalAmount).toStrictEqual(0);
       });
 
+      
       
     
     describe('calculateTotalAmount', () => {
@@ -85,6 +85,77 @@ describe('Taxes Calculator', () => {
             expect(result).toStrictEqual(41.47);
         });
     });  
+
+    describe('mapProductItems ', () => {
+        it('should manage negative quantity', () => {
+            const products: Product[] = [
+                { name: "spaghetti", price: 1.89, quantity: -1, isExempt: true }, 
+            ];
+        
+            const result = mapProductItems(products);
+            expect(result).toStrictEqual([]);
+        });
+
+        it('should map product items', () => {
+            const products: ReadonlyArray<Product> = [
+                { name: "book", price: 12.49, quantity: 2, isExempt: true},
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
+              ];
+
+            const result: ReadonlyArray<ReceiptItem> = mapProductItems(products);
+
+            expect(result).toStrictEqual([
+                { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax: 1.5, total: 16.49},
+            ]);
+        })
+
+        it('should map product items mixed with products with negative quantity', () => {
+            const products: ReadonlyArray<Product> = [
+                { name: "book", price: 12.49, quantity: 2, isExempt: true},
+                { name: "spaghetti", price: 1.89, quantity: -1, isExempt: true }, 
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
+              ];
+
+            const result: ReadonlyArray<ReceiptItem> = mapProductItems(products);
+
+            expect(result).toStrictEqual([
+                { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax: 1.5, total: 16.49},
+            ]);
+        })
+
+        it('should map product items mixed with products with negative price', () => {
+            const products: ReadonlyArray<Product> = [
+                { name: "book", price: 12.49, quantity: 2, isExempt: true},
+                { name: "spaghetti", price: -100, quantity: 1, isExempt: true }, 
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
+              ];
+
+            const result: ReadonlyArray<ReceiptItem> = mapProductItems(products);
+
+            expect(result).toStrictEqual([
+                { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax: 1.5, total: 16.49},
+            ]);
+        })
+
+        it('should map product items with zero price', () => {
+            const products: ReadonlyArray<Product> = [
+                { name: "book", price: 12.49, quantity: 2, isExempt: true},
+                { name: "spaghetti", price: 0, quantity: 1, isExempt: true }, 
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false },
+              ];
+
+            const result: ReadonlyArray<ReceiptItem> = mapProductItems(products);
+
+            expect(result).toStrictEqual([
+                { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
+                { name: "spaghetti", price: 0, quantity: 1, isExempt: true, tax: 0, total: 0 },
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax: 1.5, total: 16.49},
+            ]);
+        })
+    })
 
        
     describe('sumTotalTaxes', () => {
