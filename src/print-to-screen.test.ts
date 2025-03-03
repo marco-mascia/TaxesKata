@@ -24,10 +24,10 @@ describe('Taxes Calculator', () => {
 
         const div = printToScreen(receipt);
         expect(div).toBeInstanceOf(HTMLDivElement);
-        expect(div.children.length).toBe(6);
-        expect(div.children[0].textContent).toBe("2 book: 24.98");
-        expect(div.children[1].textContent).toBe("1 music CD: 14.99");
-        expect(div.children[2].textContent).toBe("7 spaghetti: 13.23");
+        expect(div.children.length).toBe(7);
+        expect(div.children[0].textContent).toBe("2 book24.98");
+        expect(div.children[1].textContent).toBe("1 music CD14.99*");
+        expect(div.children[2].textContent).toBe("7 spaghetti13.23");
 
         expect(div.children[4].textContent).toBe("Sales Taxes: 1.50");
         expect(div.children[5].textContent).toBe("Total: 42.32");

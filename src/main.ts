@@ -5,7 +5,8 @@ import { pickRandomItems } from './randomizer.ts';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
-    <h1>Taxes Kata</h1>
+    <h1>Receipt</h1>
+    <hr>
     <div id="receipt" class="alignLeft"></div>
   </div>
 `
