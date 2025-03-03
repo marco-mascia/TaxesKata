@@ -4,7 +4,18 @@ export type Product = {
     quantity: number;
     name: string;
     price: number;
-    isExempt: Boolean;
+    category?: ProductCategory;
+}
+
+export enum ProductCategory {
+    FOOD =  0,
+    BOOKS = 0,
+    MEDICAL = 0,
+    MUSIC = 0.1, 
+    APPAREL = 0.1,
+    ELECTRONICS = 0.1,
+    OFFICE = 0.1,
+    HOUSE = 0.1
 }
 
 export type ReceiptItem = Product & {
@@ -27,10 +38,10 @@ export type Receipt = {
 // 3. Dividing by 20 (to shift decimal point back)
     
 export const calculateTax = (product: Product): number => {
-    if (product.isExempt || product.price < 0) {
+    if (product.price < 0 || !product.category) {
         return 0;
     }
-    const tax = product.price * 0.10;
+    const tax = product.price * product.category.valueOf();
     return Math.ceil(tax * 20) / 20;
 };
 
