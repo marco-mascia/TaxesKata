@@ -1,4 +1,4 @@
-import { Product, Receipt } from "./taxes-calculator";
+import { Product, Receipt, taxesLabel, totalLabel } from "./taxes-calculator";
 
 export const printToScreen = (receipt: Receipt) => {
 
@@ -12,10 +12,10 @@ export const printToScreen = (receipt: Receipt) => {
     });
     
     const taxes = document.createElement("p");
-    taxes.textContent = `Sales Taxes: ${receipt.totalTax.toFixed(2)}`;
+    taxes.textContent = `${taxesLabel} ${receipt.totalTax.toFixed(2)}`;
     div.appendChild(taxes);
     const total = document.createElement("p");
-    total.textContent = `Total: ${receipt.totalAmount.toFixed(2)}`;
+    total.textContent = `${totalLabel} ${receipt.totalAmount.toFixed(2)}`;
     div.appendChild(total);
   
     return div;

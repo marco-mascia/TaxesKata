@@ -29,6 +29,9 @@ export type Receipt = {
     totalAmount: number;
 }
 
+export const taxesLabel = 'Sales Taxes:';
+export const totalLabel = 'Total:';
+
 
 /***** CALCS *****/
 
@@ -112,8 +115,8 @@ export const formatReceiptLine = (item: ReceiptItem): string =>
 //only for print in console
 export const formatReceipt = (receipt: Receipt): ReadonlyArray<string> => [
     ...receipt.items.map(formatReceiptLine),
-    `Sales Taxes: ${formatCurrency(receipt.totalTax)}`,
-    `Total: ${formatCurrency(receipt.totalAmount)}`
+    `${taxesLabel} ${formatCurrency(receipt.totalTax)}`,
+    `${totalLabel} ${formatCurrency(receipt.totalAmount)}`
 ];
 
 
