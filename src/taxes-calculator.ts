@@ -21,6 +21,11 @@ export type Receipt = {
 
 /***** CALCS *****/
 
+// Round up to the nearest 0.05
+// 1. Multiplying by 20 (to shift decimal point)
+// 2. Using Math.ceil to round up to nearest whole number
+// 3. Dividing by 20 (to shift decimal point back)
+    
 export const calculateTax = (product: Product): number => {
     if (product.isExempt) {
         return 0;
@@ -30,7 +35,7 @@ export const calculateTax = (product: Product): number => {
 };
 
 export const calculateItemTotal = (product: Product, tax: number): number => { 
-    return parseFloat((product.quantity * (product.price + tax)).toFixed(2))
+    return formatCurrencyNumber((product.quantity * (product.price + tax)))
 }
 
 export const createReceiptItem = (product: Product): ReceiptItem => {
