@@ -32,6 +32,20 @@ describe('Taxes Calculator', () => {
         expect(result.totalAmount).toStrictEqual(174.3);
       });
 
+      it("should calculate correct taxes and total even for 7 packs of spaghetti", () => {
+        const products: Product[] = [
+            { name: "spaghetti", price: 1.89, quantity: 7, isExempt: true }, 
+        ];
+    
+        const result: Receipt = calculateTaxes(products);
+
+        expect(result.items).toStrictEqual([
+            { name: "spaghetti", price: 1.89, quantity: 7, isExempt: true, tax: 0, total: 13.23}, 
+          ]);
+        expect(result.totalTax).toStrictEqual(0);
+        expect(result.totalAmount).toStrictEqual(13.23);
+      });
+
 
     describe('calculateTax', () => {
         it('should return 0 for exempt items', () => {

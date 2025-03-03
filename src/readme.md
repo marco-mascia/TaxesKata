@@ -1,0 +1,13 @@
+Description
+This problem requires some kind of input. You are free to implement any mechanism for feeding
+input into your solution (for example, using hard coded data within a unit test).
+You should provide sufficient evidence that your solution is complete by, as a minimum,
+indicating that it works correctly against the supplied test data
+Problem
+You need to write a program that calculates the total taxes and the total cost for a list of
+products. The rules for calculating taxes are as follow:
+
+Input 1
+
+Expected Output
+1. A basic sales tax of 10% is applied to all goods, except books, food, and medical products.

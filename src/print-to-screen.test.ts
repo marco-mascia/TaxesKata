@@ -16,6 +16,7 @@ describe('Taxes Calculator', () => {
           items: [
             { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
             { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax: 1.50, total: 24.98 },
+            { name: "spaghetti", price: 1.89, quantity: 7, isExempt: true, tax: 0, total: 13.23 }, 
           ],
           totalTax:  1.50, 
           totalAmount: 42.32
@@ -23,11 +24,12 @@ describe('Taxes Calculator', () => {
 
         const div = printToScreen(receipt);
         expect(div).toBeInstanceOf(HTMLDivElement);
-        expect(div.children.length).toBe(4);
+        expect(div.children.length).toBe(5);
         expect(div.children[0].textContent).toBe("2 book: 24.98");
         expect(div.children[1].textContent).toBe("1 music CD: 14.99");
-        expect(div.children[2].textContent).toBe("Sales Taxes: 1.50");
-        expect(div.children[3].textContent).toBe("Total: 42.32");
+        expect(div.children[2].textContent).toBe("7 spaghetti: 13.23");
+        expect(div.children[3].textContent).toBe("Sales Taxes: 1.50");
+        expect(div.children[4].textContent).toBe("Total: 42.32");
       });
 
 })

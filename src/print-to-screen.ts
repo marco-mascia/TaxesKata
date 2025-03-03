@@ -7,7 +7,7 @@ export const printToScreen = (receipt: Receipt) => {
       
     receipt.items.forEach((product: Product) => {
         const p = document.createElement("p");
-        p.textContent = `${product.quantity} ${product.name}: ${product.price * product.quantity}`;
+        p.textContent = `${product.quantity} ${product.name}: ${(product.price * product.quantity).toFixed(2)}`;
         div.appendChild(p);
     });
     
