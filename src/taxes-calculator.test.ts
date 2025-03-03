@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { calculateTax, calculateItemTotal, createReceiptItem, createReceipt, formatCurrency, formatReceiptLine, formatReceipt, Product, calculateTaxes, Receipt, formatCurrencyNumber } from "./taxes-calculator";
+import { calculateTax, calculateItemTotal, createReceiptItem, createReceipt, formatCurrency, formatReceiptLine, formatReceipt, Product, calculateTaxes, Receipt, formatCurrencyNumber, sumTotalAmount, ReceiptItem, sumTotalTaxes } from "./taxes-calculator";
 
 describe('Taxes Calculator', () => {
     
@@ -23,7 +23,7 @@ describe('Taxes Calculator', () => {
         const result: Receipt = calculateTaxes(products);
 
         expect(result.items).toStrictEqual([
-            { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0 , total: 24.98 },
+            { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
             { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax : 1.5, total: 16.49 },
             { name: "chocolate bar", price: 0.85, quantity: 1, isExempt: true, tax: 0 , total: 0.85 },
             { name: "trousers", price: 59.99, quantity: 2, isExempt: false, tax: 6, total: 131.98 },
@@ -31,6 +31,8 @@ describe('Taxes Calculator', () => {
         expect(result.totalTax).toStrictEqual(13.5);
         expect(result.totalAmount).toStrictEqual(174.3);
       });
+
+      
 
       it("should calculate correct taxes and total even for 7 packs of spaghetti", () => {
         const products: Product[] = [
@@ -46,12 +48,79 @@ describe('Taxes Calculator', () => {
         expect(result.totalAmount).toStrictEqual(13.23);
       });
 
+      
+   
+
+      it("should manage negative quantity", () => {
+        const products: Product[] = [
+            { name: "spaghetti", price: 1.89, quantity: -1, isExempt: true }, 
+        ];
+    
+        const result: Receipt = calculateTaxes(products);
+
+        expect(result.items).toStrictEqual([]);
+        expect(result.totalTax).toStrictEqual(0);
+        expect(result.totalAmount).toStrictEqual(0);
+      });
+
+      
+    
+    describe('calculateTotalAmount', () => {
+        it('should return 0 for empty array', () => {
+            const products: ReadonlyArray<ReceiptItem> = [];
+
+            const result = sumTotalAmount(products);
+
+            expect(result).toStrictEqual(0);
+        });
+
+        it('should calculate correct total amount for for given products', () => {
+            const products: ReadonlyArray<ReceiptItem> = [
+                { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax : 1.5, total: 16.49 },
+              ];
+
+            const result = sumTotalAmount(products);
+
+            expect(result).toStrictEqual(41.47);
+        });
+    });  
+
+       
+    describe('sumTotalTaxes', () => {
+        it('should return 0 for empty array', () => {
+            const products: ReadonlyArray<ReceiptItem> = [];
+
+            const result = sumTotalTaxes(products);
+
+            expect(result).toStrictEqual(0);
+        });
+
+        it('should calculate correct total taxes for for given products', () => {
+            const products: ReadonlyArray<ReceiptItem> = [
+                { name: "book", price: 12.49, quantity: 2, isExempt: true, tax: 0, total: 24.98 },
+                { name: "music CD", price: 14.99, quantity: 1, isExempt: false, tax : 1.5, total: 16.49 },
+              ];
+
+            const result = sumTotalTaxes(products);
+
+            expect(result).toStrictEqual(1.5);
+        });
+    });  
+
 
     describe('calculateTax', () => {
         it('should return 0 for exempt items', () => {
             const product = { quantity: 1, name: 'book', price: 12.49, isExempt: true};
             expect(calculateTax(product)).toBe(0);
         });
+
+        it("should manage negative price", () => {
+            const product = { name: "spaghetti", price: -1.30, quantity: 1, isExempt: true }; 
+        
+            const result = calculateTax(product);
+            expect(result).toBe(0);
+          });
 
         it('should calculate 10% tax', () => {
             const product = { quantity: 1, name: 'music CD', price: 14.99, isExempt: false };

@@ -7,7 +7,9 @@ export type Product = {
     isExempt: boolean;
 }
 
-type ReceiptItem = Product & {
+
+
+export type ReceiptItem = Product & {
     tax: number;
     total: number;
 }
@@ -27,7 +29,7 @@ export type Receipt = {
 // 3. Dividing by 20 (to shift decimal point back)
     
 export const calculateTax = (product: Product): number => {
-    if (product.isExempt) {
+    if (product.isExempt || product.price < 0) {
         return 0;
     }
     const tax = product.price * 0.10;
@@ -52,10 +54,20 @@ export const createReceipt = (products: ReadonlyArray<Product>): Receipt => {
     
     return {
         items,
-        totalTax: formatCurrencyNumber(items.reduce((sum, item) => sum + (item.tax * item.quantity), 0)),
-        totalAmount: formatCurrencyNumber(items.reduce((sum, item) => sum + item.total, 0))
+        totalTax: sumTotalTaxes(items),
+        totalAmount: sumTotalAmount(items)
     };
 };
+
+export const sumTotalTaxes = (items: ReadonlyArray<ReceiptItem>) => {
+    return formatCurrencyNumber(items.reduce((sum, item) => sum + (item.tax * item.quantity), 0))
+}
+
+
+export const sumTotalAmount = (items: ReadonlyArray<ReceiptItem>) => {
+    return formatCurrencyNumber(items.reduce((sum, item) => sum + item.total, 0))
+}
+
 
 export const calculateTaxes = (products: ReadonlyArray<Product>): Receipt =>  {
     const receipt = createReceipt(products);
