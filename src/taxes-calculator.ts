@@ -52,15 +52,15 @@ export const getProduct = (productId: number): Product => {
 
 export const calculateItemTotal = (quantity: number, price: number, tax: number): number => { 
 
-    if (!quantity || quantity < 0) {
+    if (quantity < 0) {
         throw new Error('Invalid Quantity');
     }
-    if (!price || price < 0) {
+    if (price < 0) {
         throw new Error('Invalid Price');
     }
-    // if (!tax || tax < 0) {
-    //     throw new Error('Invalid Tax');
-    // }
+    if (tax < 0) {
+        throw new Error('Invalid Tax');
+    }
 
     return formatCurrencyNumber((quantity * (price + tax)))
 }

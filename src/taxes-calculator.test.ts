@@ -329,9 +329,10 @@ describe("Taxes Calculator", () => {
     it("should manage negative price", () => {
       expect(() => calculateItemTotal(2, -14.99, 1.5)).toThrow('Invalid Price');
     });
-    // it("should manage negative tax", () => {
-    //   expect(() => calculateItemTotal(2, 14.99, -1.5)).toThrow('Invalid Tax');
-    // });
+
+    it("should manage negative tax", () => {
+      expect(() => calculateItemTotal(2, 14.99, -1.5)).toThrow('Invalid Tax');
+    });
 
   });
 
