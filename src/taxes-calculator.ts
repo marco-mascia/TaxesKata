@@ -1,23 +1,9 @@
-/***** TYPES *****/
+import { mockCategory } from "./mockCategory";
+import { mockProducts } from "./mockProducts";
+import { Order, Product, ProductCategory, Receipt, ReceiptItem } from "./types";
 
-export type Product = {
-    quantity: number;
-    name: string;
-    price: number;
-    isExempt: Boolean;
-}
-
-export type ReceiptItem = Product & {
-    tax: number;
-    total: number;
-}
-
-export type Receipt = {
-    items: ReadonlyArray<ReceiptItem>;
-    totalTax: number;
-    totalAmount: number;
-}
-
+export const taxesLabel = 'Sales Taxes:';
+export const totalLabel = 'Total:';
 
 /***** CALCS *****/
 
@@ -26,29 +12,77 @@ export type Receipt = {
 // 2. Using Math.ceil to round up to nearest whole number
 // 3. Dividing by 20 (to shift decimal point back)
     
-export const calculateTax = (product: Product): number => {
-    if (product.isExempt || product.price < 0) {
-        return 0;
+export const calculateTax = (product: Product, category: ProductCategory): number => {
+
+    if (!product || product.price < 0) {
+        throw new Error('Invalid product price');
     }
-    const tax = product.price * 0.10;
+
+    if (!category || category.tax < 0) {
+        throw new Error('Invalid category ID');
+    }
+
+    const tax = product.price * category.tax;
     return Math.ceil(tax * 20) / 20;
 };
 
-export const calculateItemTotal = (product: Product, tax: number): number => { 
-    return formatCurrencyNumber((product.quantity * (product.price + tax)))
+export const getCategory = (categoryId: number): ProductCategory  => {
+    if (!categoryId || categoryId < 0) {
+        throw new Error('Invalid category ID');
+    }
+
+    if (!mockCategory || !Array.isArray(mockCategory)) {
+        throw new Error('Categories data is not available');
+    }
+
+    return mockCategory.find((category: ProductCategory) => category.id == categoryId);
 }
 
-export const createReceiptItem = (product: Product): ReceiptItem => {
-    const tax = calculateTax(product);
+export const getProduct = (productId: number): Product => {
+    if (!productId || productId < 0) {
+        throw new Error('Invalid product ID');
+    }
+
+    if (!mockProducts || !Array.isArray(mockProducts)) {
+        throw new Error('Products data is not available');
+    }
+
+    return mockProducts.find((product: Product) => product.id == productId);
+}
+
+export const calculateItemTotal = (quantity: number, price: number, tax: number): number => { 
+
+    if (quantity < 0) {
+        throw new Error('Invalid Quantity');
+    }
+    if (price < 0) {
+        throw new Error('Invalid Price');
+    }
+    if (tax < 0) {
+        throw new Error('Invalid Tax');
+    }
+
+    return formatCurrencyNumber((quantity * (price + tax)))
+}
+
+export const createReceiptItem = (order: Order): ReceiptItem => {
+
+    const product = getProduct(order.productId);
+    const category = getCategory(product.categoryId);
+    const tax = calculateTax(product, category);
+
     return {
-        ...product,
+        name: product.name,
+        price: product.price,
+        categoryId: product.categoryId,
+        quantity: order.quantity,
         tax,
-        total: calculateItemTotal(product, tax)
+        priceTotal: calculateItemTotal(order.quantity, product.price, tax)
     };
 };
 
-export const createReceipt = (products: ReadonlyArray<Product>): Receipt => {
-    const items = mapProductItems(products);
+export const createReceipt = (orders: ReadonlyArray<Order>): Receipt => {
+    const items = mapProductItems(orders);
 
     return {
         items,
@@ -58,14 +92,14 @@ export const createReceipt = (products: ReadonlyArray<Product>): Receipt => {
 };
 
 //checks for empty products list and negative or zero product quantity
-export const mapProductItems = (products: ReadonlyArray<Product>): ReadonlyArray<ReceiptItem> => {
+export const mapProductItems = (orders: ReadonlyArray<Order>): ReadonlyArray<ReceiptItem> => {
     
-    if (!products || products.length === 0) {
+    if (!orders || orders.length === 0) {
         return [];
     }
 
-    return products.filter(product => product !== null && product !== undefined && product.quantity >= 0 && product.price >= 0)
-                    .map(product => createReceiptItem(product));
+    return orders.filter(order => order !== null && order !== undefined)
+                    .map(order => createReceiptItem(order));
 
 }
 
@@ -78,12 +112,12 @@ export const sumTotalTaxes = (items: ReadonlyArray<ReceiptItem>): number => {
 
 
 export const sumTotalAmount = (items: ReadonlyArray<ReceiptItem>) => {
-    return formatCurrencyNumber(items.reduce((sum, item) => sum + item.total, 0))
+    return formatCurrencyNumber(items.reduce((sum, item) => sum + item.priceTotal, 0))
 }
 
 
-export const calculateReceipt = (products: ReadonlyArray<Product>): Receipt =>  {
-    const receipt = createReceipt(products);
+export const calculateReceipt = (orders: ReadonlyArray<Order>): Receipt =>  {
+    const receipt = createReceipt(orders);
     printReceipt(receipt); //only for print on console
     return receipt
 };
@@ -96,13 +130,13 @@ export const formatCurrencyNumber = (amount: number): number => parseFloat(forma
 
 //only for print in console
 export const formatReceiptLine = (item: ReceiptItem): string => 
-    `${item.quantity} ${item.name}: ${formatCurrency(item.total)}`;
+    `${item.quantity} ${item.name}: ${formatCurrency(item.priceTotal)}`;
 
 //only for print in console
 export const formatReceipt = (receipt: Receipt): ReadonlyArray<string> => [
     ...receipt.items.map(formatReceiptLine),
-    `Sales Taxes: ${formatCurrency(receipt.totalTax)}`,
-    `Total: ${formatCurrency(receipt.totalAmount)}`
+    `${taxesLabel} ${formatCurrency(receipt.totalTax)}`,
+    `${totalLabel} ${formatCurrency(receipt.totalAmount)}`
 ];
 
 
@@ -111,4 +145,5 @@ export const formatReceipt = (receipt: Receipt): ReadonlyArray<string> => [
 //only for print in console
 export const printReceipt = (receipt: Receipt): void => 
     formatReceipt(receipt).forEach(line => console.log(line));
+
 
