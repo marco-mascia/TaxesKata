@@ -12,6 +12,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 `
 
 const element = document.getElementById('receipt');
-const products = pickRandomItems(10);
-element?.appendChild(printToScreen(calculateReceipt(products)));
+const orders = pickRandomItems(10);
+
+element?.appendChild(printToScreen(calculateReceipt(orders)));
 
