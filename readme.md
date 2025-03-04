@@ -34,7 +34,9 @@ Total: 42.32
 
 The exercise is written in Typescript and tested with Vitest
 
-### How to run 
+### Run application
+
+in console type:
 
 ```bash
 npm install
@@ -42,9 +44,11 @@ npm run dev
 ```
 Then you can see the result in console or directly on browser at: http://localhost:5173/
 
-### How to test
+### Run test suite
+
+in console type:
 ```bash
 npm run test
 ```
-
+Then you can see the unit test in terminal
 
