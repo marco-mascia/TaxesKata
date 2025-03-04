@@ -50,7 +50,6 @@ export const getProduct = (productId: number): Product => {
     return mockProducts.find((product: Product) => product.id == productId);
 }
 
-
 export const calculateItemTotal = (quantity: number, price: number, tax: number): number => { 
 
     if (!quantity || quantity < 0) {
@@ -99,7 +98,7 @@ export const mapProductItems = (orders: ReadonlyArray<Order>): ReadonlyArray<Rec
         return [];
     }
 
-    return orders.filter(order => order !== null && order !== undefined && order.quantity >= 0)
+    return orders.filter(order => order !== null && order !== undefined)
                     .map(order => createReceiptItem(order));
 
 }
